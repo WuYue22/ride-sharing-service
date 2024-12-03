@@ -3,10 +3,13 @@ package com.ridesharing.passengermanagement.com.ridesharing.passengermanagement.
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.ridesharing.common.pojo.RideRequest;
+import com.ridesharing.common.pojo.RideStatus;
+import com.ridesharing.common.pojo.RideType;
+import com.ridesharing.common.repository.RideRequestRepository;
 import com.ridesharing.passengermanagement.dto.PassengerDto;
 import com.ridesharing.passengermanagement.pojo.*;
 import com.ridesharing.passengermanagement.repository.PassengerRepository;
-import com.ridesharing.passengermanagement.repository.RideRequestRepository;
 import com.ridesharing.passengermanagement.service.PassengerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +26,6 @@ public class PassengerServiceTest {
 
     @Autowired
     private PassengerRepository passengerRepository;
-
     @Autowired
     private RideRequestRepository rideRequestRepository;
 

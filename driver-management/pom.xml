@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.ridesharing</groupId>
-    <artifactId>ride-sharing-service</artifactId>
+    <artifactId>driver-management</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>ride-sharing-service</name>
-    <description>ride-sharing-service</description>
+    <name>driver-management</name>
+    <description>driver-management</description>
     <url/>
     <licenses>
         <license/>
@@ -49,13 +49,14 @@
         </dependency>
 
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -67,6 +68,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ridesharing</groupId>
+            <artifactId>common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <dependencyManagement>
@@ -97,9 +108,5 @@
             </plugin>
         </plugins>
     </build>
-<modules>
-    <module>passenger-management</module>
-    <module>driver-management</module>
-</modules>
-    <packaging>pom</packaging>
+
 </project>

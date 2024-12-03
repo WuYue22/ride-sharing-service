@@ -1,7 +1,6 @@
-package com.ridesharing.passengermanagement.repository;
+package com.ridesharing.common.repository;
 
-import com.ridesharing.passengermanagement.pojo.Passenger;
-import com.ridesharing.passengermanagement.pojo.RideRequest;
+import com.ridesharing.common.pojo.RideRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

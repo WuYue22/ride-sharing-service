@@ -1,6 +1,6 @@
 package com.ridesharing.passengermanagement.dto;
 
-import com.ridesharing.passengermanagement.pojo.RideType;
+import com.ridesharing.common.pojo.RideType;
 import lombok.Data;
 
 @Data

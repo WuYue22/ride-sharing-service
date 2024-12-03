@@ -2,12 +2,11 @@ package com.ridesharing.passengermanagement.controller;
 
 
 
+import com.ridesharing.common.pojo.RideRequest;
+import com.ridesharing.common.pojo.RideType;
 import com.ridesharing.passengermanagement.dto.PassengerDto;
 import com.ridesharing.passengermanagement.dto.ResponseMessage;
-import com.ridesharing.passengermanagement.pojo.Location;
 import com.ridesharing.passengermanagement.pojo.Passenger;
-import com.ridesharing.passengermanagement.pojo.RideRequest;
-import com.ridesharing.passengermanagement.pojo.RideType;
 import com.ridesharing.passengermanagement.service.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -68,7 +67,7 @@ public class PassengerController {
         RideRequest rideRequest = passengerService.chooseRideType(passengerId, rideType, pickupLocation, dropoffLocation);
         return ResponseEntity.ok(rideRequest);
     }
-    // 3) 跟踪乘车位置
+    // 3) 跟踪司机位置
     @PostMapping("/track-ride")
     public ResponseEntity<RideRequest> trackRide(@RequestParam Integer rideRequestId) {
         RideRequest updatedRideRequest = passengerService.trackRide(rideRequestId);

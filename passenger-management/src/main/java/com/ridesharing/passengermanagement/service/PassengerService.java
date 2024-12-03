@@ -1,22 +1,24 @@
 package com.ridesharing.passengermanagement.service;
 
 
+import com.ridesharing.common.pojo.*;
+import com.ridesharing.common.pojo.RideType;
 import com.ridesharing.passengermanagement.dto.PassengerDto;
 import com.ridesharing.passengermanagement.pojo.*;
 import com.ridesharing.passengermanagement.repository.PassengerRepository;
-import com.ridesharing.passengermanagement.repository.RideRequestRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
-
+import com.ridesharing.common.repository.RideRequestRepository;
 import java.util.List;
-
+@ComponentScan(basePackages = "com.ridesharing")
 @Service
 public class PassengerService implements IPassengerService {
     @Autowired
     PassengerRepository passengerRepository;
     @Autowired
-    private RideRequestRepository rideRequestRepository;
+    RideRequestRepository rideRequestRepository;
     @Override
     public Passenger add(PassengerDto passenger) {
         Passenger passengerPojo = new Passenger();

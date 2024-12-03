@@ -1,10 +1,10 @@
 package com.ridesharing.passengermanagement.com.ridesharing.passengermanagement.controller;
 
+import com.ridesharing.common.pojo.RideRequest;
+import com.ridesharing.common.pojo.RideStatus;
+import com.ridesharing.common.pojo.RideType;
 import com.ridesharing.passengermanagement.controller.PassengerController;
 import com.ridesharing.passengermanagement.pojo.Passenger;
-import com.ridesharing.passengermanagement.pojo.RideRequest;
-import com.ridesharing.passengermanagement.pojo.RideStatus;
-import com.ridesharing.passengermanagement.pojo.RideType;
 import com.ridesharing.passengermanagement.service.PassengerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

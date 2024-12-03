@@ -1,4 +1,4 @@
-package com.ridesharing.passengermanagement.pojo;
+package com.ridesharing.common.pojo;
 
 import jakarta.persistence.*;
 import lombok.Data;
