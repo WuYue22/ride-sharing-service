@@ -2,6 +2,7 @@ package com.ridesharing.passengermanagement.controller;
 
 
 
+import com.ridesharing.billing.pojo.Bill;
 import com.ridesharing.common.pojo.RideRequest;
 import com.ridesharing.common.pojo.RideType;
 import com.ridesharing.drivermanagement.pojo.Driver;
@@ -11,6 +12,8 @@ import com.ridesharing.passengermanagement.pojo.Passenger;
 import com.ridesharing.passengermanagement.service.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +31,8 @@ public class PassengerController {
     private RestTemplate restTemplate;
     @Value("${driver-service.base-url}")
     private String driverServiceBaseUrl;
+    @Value("${billing-service.base-url}")
+    private String billingServiceBaseUrl;
 
     @GetMapping("/driver/{driverId}")
     public ResponseEntity<Driver> getDriverInfo(@PathVariable Integer driverId) {
@@ -101,5 +106,34 @@ public class PassengerController {
         RideRequest completedRideRequest = passengerService.completeRide(rideRequestId);
         return ResponseEntity.ok(completedRideRequest);
     }
+
+    //获取历史账单
+    @GetMapping("/bill/{passengerId}")
+    public ResponseEntity<List<Bill>> getBillList(@PathVariable Integer passengerId) {
+        String url=billingServiceBaseUrl+"/bill/passenger/"+passengerId;
+        //List<Bill> bills = restTemplate.getForObject(url, List.class);
+        ResponseEntity<List<Bill>> response = restTemplate.exchange(
+                url,  // URL
+                HttpMethod.GET,  // 请求方法
+                null,  // 请求体
+                new ParameterizedTypeReference<List<Bill>>() {}
+        );
+        return ResponseEntity.ok(response.getBody());
+    }
+
+    //结账（获取价格）
+    @GetMapping("/price/{rideRequestId}")
+    public ResponseEntity<Bill> getPrice(@PathVariable Integer rideRequestId) {
+        String url=billingServiceBaseUrl+"/bill/price/"+rideRequestId;
+        //List<Bill> bills = restTemplate.getForObject(url, List.class);
+        ResponseEntity<Bill> response = restTemplate.exchange(
+                url,  // URL
+                HttpMethod.GET,  // 请求方法
+                null,  // 请求体
+                new ParameterizedTypeReference<Bill>() {}
+        );
+        return ResponseEntity.ok(response.getBody());
+    }
+
 
 }

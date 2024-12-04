@@ -5,6 +5,6 @@ spring:
         - id: billing-service
           uri: lb://billing
           predicates:
-            - Path=/api/billing/**
+            - Path=/billing/**
           filters:
             - StripPrefix=1

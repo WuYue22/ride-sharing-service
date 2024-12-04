@@ -1,9 +1,7 @@
-package com.ridesharing.drivermanagement.com.ridesharing.drivermanagement.controller;
+package com.ridesharing.drivermanagement.controller;
 
 
-import com.ridesharing.common.pojo.RideRequest;
 import com.ridesharing.common.repository.RideRequestRepository;
-import com.ridesharing.drivermanagement.controller.DriverController;
 import com.ridesharing.drivermanagement.pojo.Driver;
 import com.ridesharing.drivermanagement.repository.DriverRepository;
 import com.ridesharing.drivermanagement.service.DriverService;
@@ -13,8 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

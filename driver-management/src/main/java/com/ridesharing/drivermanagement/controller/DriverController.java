@@ -1,12 +1,16 @@
 package com.ridesharing.drivermanagement.controller;
 
+import com.ridesharing.billing.pojo.Bill;
 import com.ridesharing.common.pojo.RideRequest;
 import com.ridesharing.drivermanagement.pojo.Driver;
 import com.ridesharing.drivermanagement.pojo.DriverLocation;
 import com.ridesharing.drivermanagement.service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("/api/driver")
@@ -14,7 +18,10 @@ public class DriverController {
 
     @Autowired
     private DriverService driverService;
-
+    @Value("${billing-service.base-url}")
+    private String billingServiceBaseUrl;
+    @Autowired
+    RestTemplate restTemplate;
     @GetMapping("/{driverId}")
     public ResponseEntity<Driver> getDriverById(@PathVariable Integer driverId) {
         return ResponseEntity.ok(driverService.getDriverById(driverId));
@@ -43,9 +50,14 @@ public class DriverController {
 
     // 4) 完成行程
     @PostMapping("/complete-ride")
-    public ResponseEntity<RideRequest> completeRide(@RequestParam Integer rideRequestId) {
+    public ResponseEntity<Bill> completeRide(@RequestParam Integer rideRequestId) {
         RideRequest completedRideRequest = driverService.completeRide(rideRequestId);
-        return ResponseEntity.ok(completedRideRequest);
+        // 调用 Billing 模块生成账单
+        String billingUrl = billingServiceBaseUrl + "/bill/add/" + rideRequestId;
+        // 发送请求到 Billing 服务
+        ResponseEntity<Bill> billResponse = restTemplate.getForEntity(billingUrl, Bill.class);
+        return ResponseEntity.ok(billResponse.getBody());
+
     }
 }
 

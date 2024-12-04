@@ -1,21 +1,21 @@
-package com.ridesharing.passengermanagement.com.ridesharing.passengermanagement.controller;
+package com.ridesharing.passengermanagement.controller;
 
 
+import com.ridesharing.billing.pojo.Bill;
 import com.ridesharing.common.pojo.RideRequest;
 import com.ridesharing.common.repository.RideRequestRepository;
 import com.ridesharing.drivermanagement.pojo.Driver;
-import com.ridesharing.passengermanagement.controller.PassengerController;
 import com.ridesharing.passengermanagement.service.PassengerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ContextConfiguration;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,8 +26,6 @@ public class PassengerControllerIntegrationTest {
     private TestRestTemplate restTemplate; // 用于执行 HTTP 请求
     @Autowired
     private RideRequestRepository rideRequestRepository; // 用于测试 RideRequest 数据存储
-    @Autowired
-    private PassengerService passengerService;
 
     @Test
     void trackRide_shouldReturnUpdatedRideRequest_whenValidRideRequestId() {
@@ -68,6 +66,38 @@ public class PassengerControllerIntegrationTest {
         assertEquals(driverId, response.getBody().getId());
         assertNotNull(response.getBody().getLatitude());
         assertNotNull(response.getBody().getLongitude());
+    }
+
+    //测试前启动billing微服务，并且向其中加入了passengerId=1的数据
+    @Test
+    void getBillList() {
+
+        Integer passengerId = 1;
+
+        // 执行 GET 请求到 /bill/passenger/{passengerId}
+        ResponseEntity<List<Bill>> response = restTemplate.exchange(
+                "/api/passenger/bill/" + passengerId,
+                HttpMethod.GET, null, new ParameterizedTypeReference<List<Bill>>() {});
+
+        // 验证返回的状态和数据是否符合预期
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+    }
+    //测试前启动billing微服务，并且tb_request中加入了rideRequestId=1的数据且有distance
+    @Test
+    void getPrice() {
+
+        Integer rideRequestId = 1;
+
+        // 执行 GET 请求
+        ResponseEntity<Bill> response = restTemplate.exchange(
+                "/api/passenger/price/" + rideRequestId,
+                HttpMethod.GET, null, new ParameterizedTypeReference<Bill>() {});
+
+        // 验证返回的状态和数据是否符合预期
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(rideRequestId, response.getBody().getRideRequestId());
     }
 }
 

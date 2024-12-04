@@ -18,5 +18,6 @@ public class RideRequest {
     private Double driverLongitude;
     private String dropoffLocation;
     private String rideStatus;
+    private Double distance;
 }
 

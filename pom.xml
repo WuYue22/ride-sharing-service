@@ -113,6 +113,7 @@
 <modules>
     <module>passenger-management</module>
     <module>driver-management</module>
+    <module>billing</module>
 </modules>
     <packaging>pom</packaging>
 </project>

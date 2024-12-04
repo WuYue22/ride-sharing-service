@@ -1,16 +1,14 @@
-package com.ridesharing.passengermanagement.com.ridesharing.passengermanagement.controller;
+package com.ridesharing.passengermanagement.controller;
 
 import com.ridesharing.common.pojo.RideRequest;
 import com.ridesharing.common.pojo.RideStatus;
 import com.ridesharing.common.pojo.RideType;
 import com.ridesharing.drivermanagement.pojo.Driver;
-import com.ridesharing.passengermanagement.controller.PassengerController;
 import com.ridesharing.passengermanagement.pojo.Passenger;
 import com.ridesharing.passengermanagement.service.PassengerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,15 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.Mockito.*;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ContextConfiguration;
+
 import org.springframework.test.web.servlet.MockMvc;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 //@ContextConfiguration(classes= PassengerController.class)
 @AutoConfigureMockMvc
 @SpringBootTest

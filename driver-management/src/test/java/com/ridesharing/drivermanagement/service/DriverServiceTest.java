@@ -1,4 +1,4 @@
-package com.ridesharing.drivermanagement.com.ride.ridesharing.drivermanagement.service;
+package com.ridesharing.drivermanagement.service;
 
 
 import com.ridesharing.common.pojo.RideRequest;
@@ -8,12 +8,9 @@ import com.ridesharing.common.repository.RideRequestRepository;
 import com.ridesharing.drivermanagement.pojo.Driver;
 import com.ridesharing.drivermanagement.pojo.DriverLocation;
 import com.ridesharing.drivermanagement.repository.DriverRepository;
-import com.ridesharing.drivermanagement.service.DriverService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 

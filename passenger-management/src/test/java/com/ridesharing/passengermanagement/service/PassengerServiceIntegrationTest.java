@@ -1,9 +1,8 @@
-package com.ridesharing.passengermanagement.com.ridesharing.passengermanagement.service;
+package com.ridesharing.passengermanagement.service;
 
 import com.ridesharing.common.pojo.RideRequest;
 import com.ridesharing.common.repository.RideRequestRepository;
 import com.ridesharing.drivermanagement.pojo.Driver;
-import com.ridesharing.passengermanagement.service.PassengerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

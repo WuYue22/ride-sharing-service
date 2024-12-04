@@ -1,4 +1,4 @@
-package com.ridesharing.passengermanagement.com.ridesharing.passengermanagement.service;
+package com.ridesharing.passengermanagement.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import com.ridesharing.common.pojo.RideRequest;
@@ -7,7 +7,6 @@ import com.ridesharing.common.pojo.RideType;
 import com.ridesharing.common.repository.RideRequestRepository;
 import com.ridesharing.passengermanagement.pojo.*;
 import com.ridesharing.passengermanagement.repository.PassengerRepository;
-import com.ridesharing.passengermanagement.service.PassengerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
