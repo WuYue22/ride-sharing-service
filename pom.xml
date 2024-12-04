@@ -78,6 +78,19 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- Passenger Management -->
+            <dependency>
+                <groupId>com.ridesharing</groupId>
+                <artifactId>passenger-management</artifactId>
+                <version>0.0.1-SNAPSHOT</version>  <!-- 确保版本正确 -->
+            </dependency>
+
+            <!-- Driver Management -->
+            <dependency>
+                <groupId>com.ridesharing</groupId>
+                <artifactId>driver-management</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

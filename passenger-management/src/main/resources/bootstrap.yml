@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: passenger-service
+          uri: lb://passenger-management
+          predicates:
+           -Path=/api/passenger/**
+          filters:
+            -StripPrefix=1

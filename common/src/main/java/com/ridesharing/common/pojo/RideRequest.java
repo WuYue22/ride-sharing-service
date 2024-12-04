@@ -11,6 +11,7 @@ public class RideRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer rideRequestId;
     private Integer passengerId;
+    private Integer driverId;
     private RideType rideType;
     private String pickupLocation;
     private Double driverLatitude;

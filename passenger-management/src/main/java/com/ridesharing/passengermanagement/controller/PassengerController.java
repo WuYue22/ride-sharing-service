@@ -4,23 +4,38 @@ package com.ridesharing.passengermanagement.controller;
 
 import com.ridesharing.common.pojo.RideRequest;
 import com.ridesharing.common.pojo.RideType;
+import com.ridesharing.drivermanagement.pojo.Driver;
 import com.ridesharing.passengermanagement.dto.PassengerDto;
 import com.ridesharing.passengermanagement.dto.ResponseMessage;
 import com.ridesharing.passengermanagement.pojo.Passenger;
 import com.ridesharing.passengermanagement.service.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/passenger")
+@RequestMapping("/api/passenger")
 public class PassengerController {
 
     @Autowired
     private PassengerService passengerService;
+    @Autowired
+    private RestTemplate restTemplate;
+    @Value("${driver-service.base-url}")
+    private String driverServiceBaseUrl;
+
+    @GetMapping("/driver/{driverId}")
+    public ResponseEntity<Driver> getDriverInfo(@PathVariable Integer driverId) {
+        String url = driverServiceBaseUrl + "/api/driver/" + driverId;
+        Driver driver = restTemplate.getForObject(url, Driver.class);
+        return ResponseEntity.ok(driver);
+    }
+
     //add
     @PostMapping
     public ResponseMessage<Passenger> addPassenger(@Validated @RequestBody PassengerDto passenger) {
@@ -70,8 +85,8 @@ public class PassengerController {
     // 3) 跟踪司机位置
     @PostMapping("/track-ride")
     public ResponseEntity<RideRequest> trackRide(@RequestParam Integer rideRequestId) {
-        RideRequest updatedRideRequest = passengerService.trackRide(rideRequestId);
-        return ResponseEntity.ok(updatedRideRequest);
+        RideRequest rideRequest = passengerService.trackRide(rideRequestId);
+        return ResponseEntity.ok(rideRequest);
     }
     // 4) 确认乘车
     @PostMapping("/confirm-ride")

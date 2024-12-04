@@ -1,25 +1,21 @@
 package com.ridesharing.passengermanagement.com.ridesharing.passengermanagement.service;
 
-import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
-
 import com.ridesharing.common.pojo.RideRequest;
 import com.ridesharing.common.pojo.RideStatus;
 import com.ridesharing.common.pojo.RideType;
 import com.ridesharing.common.repository.RideRequestRepository;
-import com.ridesharing.passengermanagement.dto.PassengerDto;
 import com.ridesharing.passengermanagement.pojo.*;
 import com.ridesharing.passengermanagement.repository.PassengerRepository;
 import com.ridesharing.passengermanagement.service.PassengerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.boot.test.context.SpringBootTest;
+
 import java.util.List;
-import java.util.Optional;
 
 @SpringBootTest
 public class PassengerServiceTest {
@@ -28,7 +24,6 @@ public class PassengerServiceTest {
     private PassengerRepository passengerRepository;
     @Autowired
     private RideRequestRepository rideRequestRepository;
-
     @Autowired
     private PassengerService passengerService;
 
@@ -55,10 +50,10 @@ public class PassengerServiceTest {
     }*/
     @Test
     void testAdd() {
-        Passenger passenger1 =passengerService.add("testPassenger2","password2");
-        assertNotNull(passenger1);
-        assertEquals("testPassenger2", passenger1.getPassengerName());
-        assertEquals("password2", passenger1.getPassengerPassword());
+        Passenger passenger2 =passengerService.add("testPassenger2","password2");
+        assertNotNull(passenger2);
+        assertEquals("testPassenger2", passenger2.getPassengerName());
+        assertEquals("password2", passenger2.getPassengerPassword());
     }
     @Test
     void testChooseRideType() {
@@ -91,6 +86,7 @@ public class PassengerServiceTest {
         assertEquals(40.7128, updatedRideRequest.getDriverLatitude());
         assertEquals(74.0060, updatedRideRequest.getDriverLongitude());
     }*/
+
 
     @Test
     void testConfirmRide() {

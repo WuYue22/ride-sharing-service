@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: driver-service
+          uri: lb://driver-management
+          predicates:
+             - Path=/api/driver/**
+          filters:
+              - StripPrefix=1

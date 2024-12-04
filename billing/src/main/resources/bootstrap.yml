@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: billing-service
+          uri: lb://billing
+          predicates:
+            - Path=/api/billing/**
+          filters:
+            - StripPrefix=1
