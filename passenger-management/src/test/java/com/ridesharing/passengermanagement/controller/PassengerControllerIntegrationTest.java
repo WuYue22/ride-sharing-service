@@ -3,6 +3,7 @@ package com.ridesharing.passengermanagement.controller;
 
 import com.ridesharing.billing.pojo.Bill;
 import com.ridesharing.common.pojo.RideRequest;
+import com.ridesharing.common.pojo.RideType;
 import com.ridesharing.common.repository.RideRequestRepository;
 import com.ridesharing.drivermanagement.pojo.Driver;
 import com.ridesharing.passengermanagement.service.PassengerService;
@@ -83,16 +84,19 @@ public class PassengerControllerIntegrationTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
     }
-    //测试前启动billing微服务，并且tb_request中加入了rideRequestId=1的数据且有distance
+    //测试前启动billing微服务
     @Test
     void getPrice() {
-
         Integer rideRequestId = 1;
-
+        RideRequest rideRequest=new RideRequest();
+        rideRequest.setRideRequestId(rideRequestId);
+        rideRequest.setPassengerId(1);
+        rideRequest.setDistance(100.0);
+        rideRequest.setRideType(RideType.STANDARD);
+        rideRequestRepository.save(rideRequest);
         // 执行 GET 请求
-        ResponseEntity<Bill> response = restTemplate.exchange(
-                "/api/passenger/price/" + rideRequestId,
-                HttpMethod.GET, null, new ParameterizedTypeReference<Bill>() {});
+        ResponseEntity<Bill> response = restTemplate.getForEntity(
+                "/api/passenger/price/" + rideRequestId, Bill.class);
 
         // 验证返回的状态和数据是否符合预期
         assertEquals(HttpStatus.OK, response.getStatusCode());

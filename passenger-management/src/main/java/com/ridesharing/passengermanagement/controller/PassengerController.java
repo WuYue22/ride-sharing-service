@@ -125,7 +125,7 @@ public class PassengerController {
     @GetMapping("/price/{rideRequestId}")
     public ResponseEntity<Bill> getPrice(@PathVariable Integer rideRequestId) {
         String url=billingServiceBaseUrl+"/bill/price/"+rideRequestId;
-        //List<Bill> bills = restTemplate.getForObject(url, List.class);
+
         ResponseEntity<Bill> response = restTemplate.exchange(
                 url,  // URL
                 HttpMethod.GET,  // 请求方法
