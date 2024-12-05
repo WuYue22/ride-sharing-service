@@ -24,11 +24,7 @@ public class BillService {
 
     //增加
     public Bill addBill(Integer passengerId, Integer driverId, Integer rideRequestId, double price){
-        Bill bill=new Bill();
-        bill.setPassengerId(passengerId);
-        bill.setDriverId(driverId);
-        bill.setRideRequestId(rideRequestId);
-        bill.setPrice(price);
+        Bill bill=new Bill(rideRequestId,passengerId,driverId,price);
         return billRepository.save(bill);
     }
 

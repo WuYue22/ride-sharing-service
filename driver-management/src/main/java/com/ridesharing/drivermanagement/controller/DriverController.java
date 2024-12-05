@@ -24,6 +24,7 @@ public class DriverController {
     RestTemplate restTemplate;
     @GetMapping("/{driverId}")
     public ResponseEntity<Driver> getDriverById(@PathVariable Integer driverId) {
+        //System.out.println("Received request for driverId: " + driverId); // 打印日志，确认请求进入
         return ResponseEntity.ok(driverService.getDriverById(driverId));
     }
 

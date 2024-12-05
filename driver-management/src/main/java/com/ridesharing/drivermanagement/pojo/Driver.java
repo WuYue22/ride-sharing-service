@@ -18,5 +18,15 @@ public class Driver {
     private Boolean isAvailable;
     private Double latitude;
     private Double longitude;
+
+    public Driver( String name, String password, String standard) {
+        this.username = name;
+        this.password = password;
+        this.rideType = RideType.valueOf(standard);
+        this.isAvailable=true;
+    }
+    public Driver() {
+
+    }
 }
 

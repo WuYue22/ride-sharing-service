@@ -25,10 +25,7 @@ public class DriverService {
     }
     // 1) 注册司机
     public Driver registerDriver(String username, String password, RideType rideType) {
-        Driver driver = new Driver();
-        driver.setUsername(username);
-        driver.setPassword(password);
-        driver.setRideType(rideType);
+        Driver driver = new Driver(username,password,rideType.name());
         driver.setIsAvailable(true); // 默认有空闲
         return driverRepository.save(driver);
     }
