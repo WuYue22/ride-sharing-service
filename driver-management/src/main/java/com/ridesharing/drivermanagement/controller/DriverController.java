@@ -7,7 +7,6 @@ import com.ridesharing.drivermanagement.pojo.DriverLocation;
 import com.ridesharing.drivermanagement.service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -28,11 +27,15 @@ public class DriverController {
         return ResponseEntity.ok(driverService.getDriverById(driverId));
     }
 
-    // 1) 注册司机
+    // 1) 注册司机（用户名 密码 rideType)
     @PostMapping("/register")
-    public ResponseEntity<Driver> registerDriver(@RequestBody Driver driver) {
-        Driver newDriver = driverService.registerDriver(driver.getUsername(), driver.getPassword(), driver.getRideType());
-        return ResponseEntity.ok(newDriver);
+    public ResponseEntity<String> register(@RequestBody Driver driver) {
+        try {
+            String message = driverService.register(driver);
+            return ResponseEntity.ok(message);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     // 2) 更新司机位置

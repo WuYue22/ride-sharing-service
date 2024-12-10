@@ -33,7 +33,7 @@ public class DriverControllerTest {
     private RideRequestRepository rideRequestRepository;
 
     @Test
-    public void testRegisterDriver() throws Exception {
+    public void testRegister() throws Exception {
         String driverJson = "{\"username\":\"driver1\", \"password\":\"1234567890\", \"rideType\":\"STANDARD\"}";
 
         mockMvc.perform(post("/api/driver/register")

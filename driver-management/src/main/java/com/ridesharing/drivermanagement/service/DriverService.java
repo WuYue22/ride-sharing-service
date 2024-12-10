@@ -83,5 +83,16 @@ public class DriverService {
 
         return rideRequestRepository.save(rideRequest);
     }
+
+    public String register(Driver driver) {
+        // 检查用户名是否已存在
+        if (driverRepository.existsByUsername(driver.getUsername())) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+        // 创建并保存到数据库
+        Driver newDriver = new Driver(driver.getUsername(), driver.getPassword(), driver.getRideType().name());
+        driverRepository.save(newDriver);
+        return "User registered successfully";
+    }
 }
 
