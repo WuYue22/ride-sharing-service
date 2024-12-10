@@ -6,8 +6,6 @@ import com.ridesharing.passengermanagement.pojo.LoginResponse;
 import com.ridesharing.passengermanagement.service.PassengerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController

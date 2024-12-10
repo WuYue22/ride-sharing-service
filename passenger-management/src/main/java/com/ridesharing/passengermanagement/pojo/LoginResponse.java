@@ -1,7 +1,5 @@
 package com.ridesharing.passengermanagement.pojo;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-
 public class LoginResponse {
     private Integer userId;
     private String message;

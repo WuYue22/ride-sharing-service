@@ -8,7 +8,6 @@ import com.ridesharing.passengermanagement.dto.PassengerDto;
 import com.ridesharing.passengermanagement.dto.RegisterRequest;
 import com.ridesharing.passengermanagement.pojo.*;
 import com.ridesharing.passengermanagement.repository.PassengerRepository;
-import com.ridesharing.passengermanagement.util.GlobalUser;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -85,7 +84,7 @@ public class PassengerService implements IPassengerService {
         return rideRequestRepository.findByPickupLocationAndDropoffLocation(pickupLocation, dropoffLocation);
     }
 
-    // 2) 选择乘车类型
+    // 提交乘车请求
     public RideRequest submitRequest(Integer passengerId, RideType rideType, String pickupLocation, String dropoffLocation,Double distance) {
         Passenger passenger = passengerRepository.findById(passengerId)
                 .orElseThrow(() -> new RuntimeException("Passenger not found"));
@@ -114,19 +113,20 @@ public class PassengerService implements IPassengerService {
 
         // 获取司机信息
         Integer driverId = rideRequest.getDriverId();
-        Driver driverLocation = null;
+        Driver driver = null;
         try {
-            driverLocation = restTemplate.getForObject(
+            driver = restTemplate.getForObject(
                     driverServiceBaseUrl + "/api/driver/" + driverId,
                     Driver.class);
         } catch (RestClientException e) {
-            throw new RuntimeException("Failed to get driver location", e);
+            throw new RuntimeException("Failed to get driver", e);
         }
-
-        // 更新乘车请求中的司机位置
-        rideRequest.setDriverLatitude(driverLocation.getLatitude());
-        rideRequest.setDriverLongitude(driverLocation.getLongitude());
-
+        try {
+            // 更新乘车请求中的司机位置
+            rideRequest.setDriverLatitude(driver.getLatitude());
+            rideRequest.setDriverLongitude(driver.getLongitude());
+        }catch(Exception e)
+        {throw new RuntimeException("Failed to get driver location", e);}
         // 保存更新后的乘车请求
         return rideRequestRepository.save(rideRequest);
     }
