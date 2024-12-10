@@ -106,8 +106,9 @@ public class PassengerController {
     }
 
     //结账（获取价格）
-    @GetMapping("/price/{rideRequestId}")
-    public ResponseEntity<Bill> getPrice(@PathVariable Integer rideRequestId) {
+    @GetMapping("/price/{passengerId}")
+    public ResponseEntity<Bill> getPrice(@PathVariable Integer passengerId) {
+        Integer rideRequestId=passengerService.findRequestId(passengerId);
         String url=billingServiceBaseUrl+"/bill/price/"+rideRequestId;
 
         ResponseEntity<Bill> response = restTemplate.exchange(

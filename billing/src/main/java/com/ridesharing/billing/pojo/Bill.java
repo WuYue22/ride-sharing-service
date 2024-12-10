@@ -1,27 +1,35 @@
 package com.ridesharing.billing.pojo;
 
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Table(name = "tb_bill")
-@Data
 @Entity
+@Data
 public class Bill {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer rideRequestId;
     private Integer passengerId;
     private Integer driverId;
     private Double price;
+    private LocalDateTime timestamp;
 
     public Bill(Integer rideRequestId, Integer passengerId, Integer driverId, Double price) {
         this.rideRequestId=rideRequestId;
         this.passengerId=passengerId;
         this.driverId=driverId;
         this.price=price;
+        if (this.timestamp == null) {
+            this.timestamp = LocalDateTime.now();
+        }
     }
     public Bill(){
-
+        if (this.timestamp == null) {
+            this.timestamp = LocalDateTime.now();
+        }
     }
+
 }

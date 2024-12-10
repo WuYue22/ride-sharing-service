@@ -164,4 +164,11 @@ public class PassengerService implements IPassengerService {
         response.setMessage("Login successful");
         return response;
     }
+
+    //根据passengerId找最新的rideRequest的Id
+    public Integer findRequestId(Integer passengerId) {
+        List<RideRequest> rideRequests= rideRequestRepository.findByPassengerId(passengerId);
+        RideRequest rideRequest= rideRequests.get(rideRequests.size()-1);
+        return rideRequest.getRideRequestId();
+    }
 }

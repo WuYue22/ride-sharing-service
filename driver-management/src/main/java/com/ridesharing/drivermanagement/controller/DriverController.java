@@ -50,8 +50,8 @@ public class DriverController {
     }
 
     // 4) 完成行程
-    @PostMapping("/complete-ride")
-    public ResponseEntity<Bill> completeRide(@RequestParam Integer rideRequestId) {
+    @PostMapping("/complete-ride/{rideRequestId}")
+    public ResponseEntity<Bill> completeRide(@PathVariable Integer rideRequestId) {
         RideRequest completedRideRequest = driverService.completeRide(rideRequestId);
         // 调用 Billing 模块生成账单
         String billingUrl = billingServiceBaseUrl + "/bill/add/" + rideRequestId;
