@@ -16,20 +16,20 @@ public class Bill {
     private Integer driverId;
     private Double price;
     private LocalDateTime timestamp;
-
+    @PrePersist
+    protected void onCreate() {
+        if (this.timestamp == null) {
+            this.timestamp = LocalDateTime.now();
+        }
+    }
     public Bill(Integer rideRequestId, Integer passengerId, Integer driverId, Double price) {
         this.rideRequestId=rideRequestId;
         this.passengerId=passengerId;
         this.driverId=driverId;
         this.price=price;
-        if (this.timestamp == null) {
-            this.timestamp = LocalDateTime.now();
-        }
+
     }
     public Bill(){
-        if (this.timestamp == null) {
-            this.timestamp = LocalDateTime.now();
-        }
     }
 
 }

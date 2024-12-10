@@ -7,6 +7,6 @@ import com.ridesharing.billing.pojo.Bill;
 import java.util.List;
 
 @Repository
-public interface BillRepository extends JpaRepository<Bill, Long> {
+public interface BillRepository extends JpaRepository<Bill, Integer> {
     List<Bill> findByPassengerId(Integer passengerId);
 }
