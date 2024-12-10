@@ -72,8 +72,9 @@ public class PassengerController {
         return ResponseEntity.ok(response);
     }
     // 3) 跟踪司机位置
-    @PostMapping("/track-ride")
-    public ResponseEntity<RideRequest> trackRide(@RequestParam Integer rideRequestId) {
+    @PostMapping("/track-ride/{passengerId}")
+    public ResponseEntity<RideRequest> trackRide(@PathVariable Integer passengerId) {
+        Integer rideRequestId=passengerService.findRequestId(passengerId);
         RideRequest rideRequest = passengerService.trackRide(rideRequestId);
         return ResponseEntity.ok(rideRequest);
     }
