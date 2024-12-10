@@ -10,6 +10,7 @@ import com.ridesharing.passengermanagement.dto.PassengerDto;
 import com.ridesharing.passengermanagement.dto.ResponseMessage;
 import com.ridesharing.passengermanagement.pojo.Passenger;
 import com.ridesharing.passengermanagement.service.PassengerService;
+import com.ridesharing.passengermanagement.util.GlobalUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -33,7 +34,7 @@ public class PassengerController {
     private String driverServiceBaseUrl;
     @Value("${billing-service.base-url}")
     private String billingServiceBaseUrl;
-
+    Passenger user = GlobalUser.getInstance().getUser();
     @GetMapping("/driver/{driverId}")
     public ResponseEntity<Driver> getDriverInfo(@PathVariable Integer driverId) {
         String url = driverServiceBaseUrl + "/api/driver/" + driverId;
@@ -41,20 +42,7 @@ public class PassengerController {
         return ResponseEntity.ok(driver);
     }
 
-    //add
-    @PostMapping
-    public ResponseMessage<Passenger> addPassenger(@Validated @RequestBody PassengerDto passenger) {
 
-        Passenger passenger1= passengerService.add(passenger);
-        return ResponseMessage.success(passenger1);
-    }
-
-    //query
-    @GetMapping("/{passengerId}")
-    public ResponseMessage getPassenger(@PathVariable Integer passengerId) {
-        Passenger passenger1=passengerService.get(passengerId);
-        return ResponseMessage.success(passenger1);
-    }
     //update
     @PutMapping
     public ResponseMessage updatePassenger(@Validated @RequestBody PassengerDto passenger) {
@@ -77,15 +65,11 @@ public class PassengerController {
         return ResponseEntity.ok(rides);
     }
 
-    // 2) 选择乘车类型
-    @PostMapping("/choose-ride")
-    public ResponseEntity<RideRequest> chooseRideType(
-            @RequestParam Integer passengerId,
-            @RequestParam RideType rideType,
-            @RequestParam String pickupLocation,
-            @RequestParam String dropoffLocation) {
-        RideRequest rideRequest = passengerService.chooseRideType(passengerId, rideType, pickupLocation, dropoffLocation);
-        return ResponseEntity.ok(rideRequest);
+    //提交乘车请求
+    @PostMapping("/submit-request")
+    public ResponseEntity<RideRequest> submitRequest(@RequestBody RideRequest rideRequest) {
+        RideRequest response = passengerService.submitRequest(rideRequest.getPassengerId(), rideRequest.getRideType(), rideRequest.getPickupLocation(), rideRequest.getDropoffLocation(), rideRequest.getDistance());
+        return ResponseEntity.ok(response);
     }
     // 3) 跟踪司机位置
     @PostMapping("/track-ride")

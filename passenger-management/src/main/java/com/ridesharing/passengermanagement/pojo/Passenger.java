@@ -14,6 +14,14 @@ public class Passenger {
     private String passengerPassword;
 
 
+    public Passenger(){
+
+    }
+    public Passenger(Integer id,String name,String password){
+        this.passengerId=id;
+        this.passengerName=name;
+        this.passengerPassword=password;
+    }
     @Override
     public String toString() {
         return "Passenger{" +

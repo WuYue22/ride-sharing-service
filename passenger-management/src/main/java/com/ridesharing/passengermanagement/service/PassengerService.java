@@ -4,10 +4,11 @@ package com.ridesharing.passengermanagement.service;
 import com.ridesharing.common.pojo.*;
 import com.ridesharing.common.pojo.RideType;
 import com.ridesharing.drivermanagement.pojo.Driver;
-import com.ridesharing.drivermanagement.pojo.DriverLocation;
 import com.ridesharing.passengermanagement.dto.PassengerDto;
+import com.ridesharing.passengermanagement.dto.RegisterRequest;
 import com.ridesharing.passengermanagement.pojo.*;
 import com.ridesharing.passengermanagement.repository.PassengerRepository;
+import com.ridesharing.passengermanagement.util.GlobalUser;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,6 +63,22 @@ public class PassengerService implements IPassengerService {
         passengerRepository.deleteById(passengerId);
     }
 
+    public String register(RegisterRequest request) {
+        // 检查用户名是否已存在
+        if (passengerRepository.existsByPassengerName(request.getUsername())) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+
+        // 创建 Passenger 实体并保存到数据库
+        Passenger passenger = new Passenger();
+        passenger.setPassengerName(request.getUsername());
+        passenger.setPassengerPassword(request.getPassword());
+
+        passengerRepository.save(passenger);
+
+        return "User registered successfully";
+    }
+
     // 1) 搜索乘车
     public List<RideRequest> searchRide(String pickupLocation, String dropoffLocation) {
         // 查找匹配的乘车请求
@@ -69,7 +86,7 @@ public class PassengerService implements IPassengerService {
     }
 
     // 2) 选择乘车类型
-    public RideRequest chooseRideType(Integer passengerId, RideType rideType, String pickupLocation, String dropoffLocation) {
+    public RideRequest submitRequest(Integer passengerId, RideType rideType, String pickupLocation, String dropoffLocation,Double distance) {
         Passenger passenger = passengerRepository.findById(passengerId)
                 .orElseThrow(() -> new RuntimeException("Passenger not found"));
 
@@ -78,6 +95,7 @@ public class PassengerService implements IPassengerService {
         rideRequest.setRideType(rideType);
         rideRequest.setPickupLocation(pickupLocation);
         rideRequest.setDropoffLocation(dropoffLocation);
+        rideRequest.setDistance(distance);
         rideRequest.setRideStatus(RideStatus.PENDING.name());
         return rideRequestRepository.save(rideRequest);
     }
@@ -130,4 +148,20 @@ public class PassengerService implements IPassengerService {
         return rideRequestRepository.save(rideRequest);
     }
 
+    public LoginResponse login(RegisterRequest loginRequest) {
+        String username = loginRequest.getUsername();
+
+        // 创建 Passenger 实体并保存到数据库
+        Passenger passenger = passengerRepository.findByPassengerName(username).orElseThrow(() ->
+                new IllegalArgumentException("Passenger not found"));
+        if(!passenger.getPassengerPassword().equals(loginRequest.getPassword())){
+            throw new IllegalArgumentException("Password is incorrect");
+        }
+        //Passenger currentUser = new Passenger(passenger.getPassengerId(), username,passenger.getPassengerPassword());
+        //GlobalUser.getInstance().setUser(currentUser);
+        LoginResponse response=new LoginResponse();
+        response.setUserId(passenger.getPassengerId());
+        response.setMessage("Login successful");
+        return response;
+    }
 }

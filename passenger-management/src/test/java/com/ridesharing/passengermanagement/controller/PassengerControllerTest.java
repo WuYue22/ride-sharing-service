@@ -70,7 +70,7 @@ public class PassengerControllerTest {
         RideRequest rideRequest = new RideRequest();
         rideRequest.setRideStatus(RideStatus.PENDING.name());
 
-        passengerService.chooseRideType(1, RideType.STANDARD, "Location A", "Location B");
+        passengerService.submitRequest(1, RideType.STANDARD, "Location A", "Location B",1.0);
 
         // 模拟 HTTP 请求并验证响应
         mockMvc.perform(post("/api/passenger/choose-ride")

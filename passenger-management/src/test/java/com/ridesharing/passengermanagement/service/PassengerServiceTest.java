@@ -55,8 +55,8 @@ public class PassengerServiceTest {
         assertEquals("password2", passenger2.getPassengerPassword());
     }
     @Test
-    void testChooseRideType() {
-        RideRequest rideRequest = passengerService.chooseRideType(1, RideType.STANDARD, "Location A", "Location B");
+    void testSubmitRequest() {
+        RideRequest rideRequest = passengerService.submitRequest(1, RideType.STANDARD, "Location A", "Location B",1.0);
         assertNotNull(rideRequest);
         assertEquals(RideStatus.PENDING.name(), rideRequest.getRideStatus());
         assertEquals("Location A", rideRequest.getPickupLocation());
@@ -65,7 +65,7 @@ public class PassengerServiceTest {
 
     @Test
     void testSearchRide() {
-        passengerService.chooseRideType(1, RideType.STANDARD, "Location A", "Location B");
+        passengerService.submitRequest(1, RideType.STANDARD, "Location A", "Location B",1.0);
         List<RideRequest> rideRequests = passengerService.searchRide( "Location A", "Location B");
 
         assertNotNull(rideRequests);
