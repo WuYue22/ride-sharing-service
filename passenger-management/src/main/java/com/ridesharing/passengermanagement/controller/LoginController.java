@@ -1,8 +1,8 @@
 package com.ridesharing.passengermanagement.controller;
 
 
+import com.ridesharing.passengermanagement.dto.LoginResponse;
 import com.ridesharing.passengermanagement.dto.RegisterRequest;
-import com.ridesharing.passengermanagement.pojo.LoginResponse;
 import com.ridesharing.passengermanagement.service.PassengerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

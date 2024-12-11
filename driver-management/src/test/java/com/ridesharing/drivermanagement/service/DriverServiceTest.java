@@ -27,19 +27,6 @@ public class DriverServiceTest {
     private RideRequestRepository rideRequestRepository;
 
     @Test
-    public void testRegisterDriver() {
-        Driver driver = new Driver();
-        driver.setUsername("driver1");
-        driver.setPassword("1234567890");
-        driver.setRideType(RideType.STANDARD);
-
-        Driver savedDriver = driverService.registerDriver(driver);
-
-        assertNotNull(savedDriver.getId());
-        assertEquals("driver1", savedDriver.getUsername());
-    }
-
-    @Test
     public void testUpdateDriverLocation() {
         Driver driver = new Driver();
         driver.setUsername("driver2");

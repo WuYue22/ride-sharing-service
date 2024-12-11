@@ -4,6 +4,7 @@ package com.ridesharing.passengermanagement.service;
 import com.ridesharing.common.pojo.*;
 import com.ridesharing.common.pojo.RideType;
 import com.ridesharing.drivermanagement.pojo.Driver;
+import com.ridesharing.passengermanagement.dto.LoginResponse;
 import com.ridesharing.passengermanagement.dto.PassengerDto;
 import com.ridesharing.passengermanagement.dto.RegisterRequest;
 import com.ridesharing.passengermanagement.pojo.*;
@@ -98,11 +99,6 @@ public class PassengerService implements IPassengerService {
         rideRequest.setRideStatus(RideStatus.PENDING.name());
         return rideRequestRepository.save(rideRequest);
     }
-    /*// 3) 跟踪乘车位置
-    public RideRequest trackRide(Integer passengerId) {
-        return rideRequestRepository.findById(passengerId)
-                .orElseThrow(() -> new RuntimeException("RideRequest not found"));
-    }*/
 
     // 跟踪乘车位置
     @Transactional
@@ -151,7 +147,6 @@ public class PassengerService implements IPassengerService {
     public LoginResponse login(RegisterRequest loginRequest) {
         String username = loginRequest.getUsername();
 
-        // 创建 Passenger 实体并保存到数据库
         Passenger passenger = passengerRepository.findByPassengerName(username).orElseThrow(() ->
                 new IllegalArgumentException("Passenger not found"));
         if(!passenger.getPassengerPassword().equals(loginRequest.getPassword())){

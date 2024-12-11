@@ -1,6 +1,7 @@
 package com.ridesharing.common.repository;
 
 import com.ridesharing.common.pojo.RideRequest;
+import com.ridesharing.common.pojo.RideType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +12,6 @@ public interface RideRequestRepository extends JpaRepository<RideRequest, Intege
     List<RideRequest> findByPickupLocationAndDropoffLocation(String pickupLocation, String dropoffLocation);
 
     List<RideRequest> findByPassengerId(Integer passengerId);
+
+    List<RideRequest> findByRideTypeAndRideStatus(RideType rideType, String pending);
 }

@@ -2,8 +2,8 @@ package com.ridesharing.drivermanagement.service;
 
 import com.ridesharing.common.pojo.RideRequest;
 import com.ridesharing.common.pojo.RideStatus;
-import com.ridesharing.common.pojo.RideType;
 import com.ridesharing.common.repository.RideRequestRepository;
+import com.ridesharing.drivermanagement.dto.LoginResponse;
 import com.ridesharing.drivermanagement.pojo.Driver;
 import com.ridesharing.drivermanagement.pojo.DriverLocation;
 import com.ridesharing.drivermanagement.repository.DriverRepository;
@@ -22,16 +22,6 @@ public class DriverService {
     public Driver getDriverById(Integer driverId){
         return driverRepository.findById(driverId).orElseThrow(() -> new RuntimeException("Driver not found"));
 
-    }
-    // 1) 注册司机
-    public Driver registerDriver(String username, String password, RideType rideType) {
-        Driver driver = new Driver(username,password,rideType.name());
-        driver.setIsAvailable(true); // 默认有空闲
-        return driverRepository.save(driver);
-    }
-    public Driver registerDriver(Driver driver){
-        driver.setIsAvailable(true); // 默认有空闲
-        return driverRepository.save(driver);
     }
 
     // 2) 更新司机位置
@@ -62,6 +52,7 @@ public class DriverService {
         driver.setIsAvailable(false);
         driverRepository.save(driver);
         //更新请求位置
+        rideRequest.setDriverId(driverId);
         rideRequest.setDriverLatitude(driver.getLatitude());
         rideRequest.setDriverLongitude(driver.getLongitude());
         // 更新乘车请求的状态
@@ -83,7 +74,7 @@ public class DriverService {
 
         return rideRequestRepository.save(rideRequest);
     }
-
+    // 1) 注册司机
     public String register(Driver driver) {
         // 检查用户名是否已存在
         if (driverRepository.existsByUsername(driver.getUsername())) {
@@ -91,8 +82,24 @@ public class DriverService {
         }
         // 创建并保存到数据库
         Driver newDriver = new Driver(driver.getUsername(), driver.getPassword(), driver.getRideType().name());
+        newDriver.setIsAvailable(true); // 默认有空闲
         driverRepository.save(newDriver);
         return "User registered successfully";
+    }
+    //登录
+    public LoginResponse login(Driver loginRequest) {
+        String username = loginRequest.getUsername();
+        Driver driver = driverRepository.findByUsername(username).orElseThrow(() ->
+                new IllegalArgumentException("Driver not found"));
+        if(!driver.getPassword().equals(loginRequest.getPassword())){
+            throw new IllegalArgumentException("Password is incorrect");
+        }
+
+        LoginResponse response=new LoginResponse();
+        response.setUserId(driver.getId());
+        response.setRideType(driver.getRideType());
+        response.setMessage("Login successful");
+        return response;
     }
 }
 
