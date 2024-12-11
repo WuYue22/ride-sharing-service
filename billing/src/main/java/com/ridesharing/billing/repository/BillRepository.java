@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface BillRepository extends JpaRepository<Bill, Integer> {
     List<Bill> findByPassengerId(Integer passengerId);
+
+    List<Bill> findByDriverId(Integer driverId);
 }

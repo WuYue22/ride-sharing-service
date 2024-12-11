@@ -45,6 +45,9 @@ public class BillService {
         return billRepository.findByPassengerId(passengerId);
     }
 
+    public List<Bill> getBillsByDriverId(Integer driverId) {
+        return billRepository.findByDriverId(driverId);
+    }
 }
 
 

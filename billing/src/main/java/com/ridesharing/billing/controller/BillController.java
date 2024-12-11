@@ -27,6 +27,11 @@ public class BillController {
     public ResponseEntity<List<Bill>> getBillList(@PathVariable Integer passengerId) {
         return ResponseEntity.ok(billService.getBillsByPassengerId(passengerId));
     }
+    //获取司机账单
+    @GetMapping("/driver/{driverId}")
+    public ResponseEntity<List<Bill>> getDriverBillList(@PathVariable Integer driverId) {
+        return ResponseEntity.ok(billService.getBillsByDriverId(driverId));
+    }
 
     //告知乘客价格
     @GetMapping("/price/{rideRequestId}")
