@@ -2,22 +2,25 @@ package com.ridesharing.drivermanagement.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
+@Profile("driver")
 @Configuration
 public class CorsConfig {
+
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:8080")
-                        .allowedMethods("*")
-                        .allowCredentials(true);
-            }
-        };
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        //config.setAllowCredentials(true); // 允许发送凭据，雷区
+        config.addAllowedOrigin("*"); //允许任意域名跨域访问接口
+        config.addAllowedHeader("*"); // 允许所有头部信息
+        config.addAllowedMethod("*"); // 允许所有请求方法
+        source.registerCorsConfiguration("/**", config); // 应用于所有路径
+        return new CorsFilter(source);
     }
 }
-

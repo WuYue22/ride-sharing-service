@@ -1,7 +1,5 @@
 package com.ridesharing.passengermanagement.controller;
 
-
-
 import com.ridesharing.billing.pojo.Bill;
 import com.ridesharing.common.pojo.RideRequest;
 import com.ridesharing.common.pojo.RideType;
