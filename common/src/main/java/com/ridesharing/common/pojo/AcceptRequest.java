@@ -1,4 +1,4 @@
-package com.ridesharing.drivermanagement.dto;
+package com.ridesharing.common.pojo;
 
 public class AcceptRequest {
     private Integer driverId;

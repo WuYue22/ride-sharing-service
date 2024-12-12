@@ -2,7 +2,7 @@ package com.ridesharing.drivermanagement.controller;
 
 
 import com.ridesharing.common.repository.RideRequestRepository;
-import com.ridesharing.drivermanagement.pojo.Driver;
+import com.ridesharing.common.pojo.Driver;
 import com.ridesharing.drivermanagement.repository.DriverRepository;
 import com.ridesharing.drivermanagement.service.DriverService;
 import org.junit.jupiter.api.Test;

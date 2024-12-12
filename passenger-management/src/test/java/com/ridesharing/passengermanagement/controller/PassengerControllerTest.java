@@ -3,7 +3,7 @@ package com.ridesharing.passengermanagement.controller;
 import com.ridesharing.common.pojo.RideRequest;
 import com.ridesharing.common.pojo.RideStatus;
 import com.ridesharing.common.pojo.RideType;
-import com.ridesharing.drivermanagement.pojo.Driver;
+import com.ridesharing.common.pojo.Driver;
 import com.ridesharing.passengermanagement.pojo.Passenger;
 import com.ridesharing.passengermanagement.service.PassengerService;
 import org.junit.jupiter.api.BeforeEach;

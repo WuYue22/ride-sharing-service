@@ -3,7 +3,7 @@ package com.ridesharing.passengermanagement.controller;
 import com.ridesharing.billing.pojo.Bill;
 import com.ridesharing.common.pojo.RideRequest;
 import com.ridesharing.common.pojo.RideType;
-import com.ridesharing.drivermanagement.pojo.Driver;
+//import com.ridesharing.common.pojo.Driver;
 import com.ridesharing.passengermanagement.dto.PassengerDto;
 import com.ridesharing.passengermanagement.dto.ResponseMessage;
 import com.ridesharing.passengermanagement.pojo.Passenger;
@@ -33,13 +33,12 @@ public class PassengerController {
     @Value("${billing-service.base-url}")
     private String billingServiceBaseUrl;
     Passenger user = GlobalUser.getInstance().getUser();
-    @GetMapping("/driver/{driverId}")
+    /*@GetMapping("/driver/{driverId}")
     public ResponseEntity<Driver> getDriverInfo(@PathVariable Integer driverId) {
         String url = driverServiceBaseUrl + "/api/driver/" + driverId;
         Driver driver = restTemplate.getForObject(url, Driver.class);
         return ResponseEntity.ok(driver);
-    }
-
+    }*/
 
     //update
     @PutMapping
@@ -103,21 +102,4 @@ public class PassengerController {
         );
         return ResponseEntity.ok(response.getBody());
     }
-
-    //结账（获取价格）
-    @GetMapping("/price/{passengerId}")
-    public ResponseEntity<Bill> getPrice(@PathVariable Integer passengerId) {
-        Integer rideRequestId=passengerService.findRequestId(passengerId);
-        String url=billingServiceBaseUrl+"/bill/price/"+rideRequestId;
-
-        ResponseEntity<Bill> response = restTemplate.exchange(
-                url,  // URL
-                HttpMethod.GET,  // 请求方法
-                null,  // 请求体
-                new ParameterizedTypeReference<Bill>() {}
-        );
-        return ResponseEntity.ok(response.getBody());
-    }
-
-
 }

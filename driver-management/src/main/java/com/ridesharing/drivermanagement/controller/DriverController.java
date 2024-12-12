@@ -4,10 +4,10 @@ import com.ridesharing.billing.pojo.Bill;
 import com.ridesharing.common.pojo.RideRequest;
 import com.ridesharing.common.pojo.RideType;
 import com.ridesharing.common.repository.RideRequestRepository;
-import com.ridesharing.drivermanagement.dto.AcceptRequest;
+import com.ridesharing.common.pojo.AcceptRequest;
 import com.ridesharing.drivermanagement.dto.LoginResponse;
 import com.ridesharing.drivermanagement.dto.RideTypedto;
-import com.ridesharing.drivermanagement.pojo.Driver;
+import com.ridesharing.common.pojo.Driver;
 import com.ridesharing.drivermanagement.pojo.DriverLocation;
 import com.ridesharing.drivermanagement.service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +29,8 @@ public class DriverController {
     private DriverService driverService;
     @Value("${billing-service.base-url}")
     private String billingServiceBaseUrl;
+    @Value("${passenger-service.base-url}")
+    private String passengerServiceBaseUrl;
     @Autowired
     RestTemplate restTemplate;
     @Autowired
@@ -74,6 +76,12 @@ public class DriverController {
         Integer driverId=acceptRequest.getDriverId();
         Integer rideRequestId=acceptRequest.getRideRequestId();
         RideRequest updatedRideRequest = driverService.acceptRide(driverId, rideRequestId);
+        AcceptRequest acceptRequestToPassenger=new AcceptRequest();
+        acceptRequestToPassenger.setDriverId(rideRequestRepository.findById(rideRequestId).get().getPassengerId());
+        acceptRequestToPassenger.setRideRequestId(rideRequestId);
+        // 发送信号到 Passenger 微服务告知已接单
+        String url = passengerServiceBaseUrl+"/api/passenger/notifyPassenger";
+        restTemplate.postForEntity(url, acceptRequestToPassenger, Void.class);
         return ResponseEntity.ok(updatedRideRequest);
     }
 
