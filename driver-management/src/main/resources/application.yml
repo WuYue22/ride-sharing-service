@@ -23,14 +23,14 @@ spring:
         client:
           service-url:
             defaultZone: http://localhost:8761/eureka/  # Eureka ????
-    gateway:
-      routes:
-        - id: driver-management
-          uri: lb://driver-management
-          predicates:
-            - Path=/api/driver/**
-          filters:
-            - StripPrefix=1
+#    gateway:
+#      routes:
+#        - id: driver-management
+#          uri: lb://driver-management
+#          predicates:
+#            - Path=/api/driver/**
+#          filters:
+#            - StripPrefix=1
 
 server:
   port: 8082

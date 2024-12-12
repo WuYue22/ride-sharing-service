@@ -1,6 +1,6 @@
 spring:
   application:
-    name: api-gateway  # ?????????
+    name: api-gateway
   cloud:
     gateway:
       routes:
@@ -8,21 +8,24 @@ spring:
           uri: lb://driver-management  # ???????lb://??????? driver-management ??
           predicates:
             - Path=/api/driver/**  # ????? /api/driver/ ?????
+
         - id: passenger-management  # ??ID
           uri: lb://passenger-management  # ???????lb://??????? passenger-management ??
           predicates:
             - Path=/api/passenger/**  # ????? /api/passenger/ ?????
-        - id: billing-service  # ??ID
+
+        - id: billing # ??ID
           uri: lb://billing
           predicates:
             - Path=/bill/**
+
       globalcors:
         add-to-simple-url-handler-mapping: true
         corsConfigurations:
           '[/**]':
             allowedOrigins: "*"
             allowedMethods: "*"
-            allowCredentials: true
+            allowCredentials: false
 
 
     discovery:
@@ -34,7 +37,8 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/  # ?? Eureka Server ???
-
+  instance:
+    hostname: localhost
 driver-service:
   base-url: http://localhost:8082
 passenger-service:
