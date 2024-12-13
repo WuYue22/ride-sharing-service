@@ -21,6 +21,7 @@ For further reference, please consider the following sections:
 主要功能：
 * 用户注册登录
 * 提交乘车请求
+* 追踪司机位置
 * 获取历史账单
 * 结账
 * 查询司机信息
@@ -28,9 +29,11 @@ For further reference, please consider the following sections:
 ### driver-management
 主要功能：
 * 司机注册登录
+* 查看请求列表
 * 接单
 * 更新位置
 * 完成行程
+* 获取历史账单
 
 ### billing
 主要功能：
@@ -46,12 +49,17 @@ For further reference, please consider the following sections:
 * 在driver-management服务的完成行程功能中和billing服务进行通信，司机完成行程后自动生成该次行程的账单。
 
 ## 网关配置
-本项目使用Spring Cloud Gateway作为网关，设计了模块api-gateway进行配置。
+本项目使用Spring Cloud Gateway进行网关配置。
 使用Eureka进行服务发现和注册。
 
 ## 测试结果
-各微服务模块全部通过JUnit单元测试和集成测试。
+JUnit单元测试和集成测试还未编写完成……
 
-启动后所有微服务全部成功注册到Eureka。
+启动后所有微服务全部成功注册到Eureka。可以正确转发路由，允许前端跨域访问。
 
-但是网关配置一直没有通过测试，仍在排查错误。
+
+
+##待优化
+*用户鉴权：密码加密，使用JWT安全机制进行登录。
+*
+
