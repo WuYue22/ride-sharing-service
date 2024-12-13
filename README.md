@@ -12,7 +12,7 @@ For further reference, please consider the following sections:
 * [Spring Web](https://docs.spring.io/spring-boot/3.3.6/reference/web/servlet.html)
 
 ## 项目介绍
-本项目使用微服务框架实现了出租车合乘服务概念的表示，设计了如下三个微服务：
+本项目使用Springboot微服务框架实现了出租车合乘服务概念的表示，设计了如下三个微服务：
 
 * passenger-management
 * driver-management
@@ -59,7 +59,7 @@ JUnit单元测试和集成测试还未编写完成……
 
 
 
-##待优化
-*用户鉴权：密码加密，使用JWT安全机制进行登录。
+## 待优化
+* 用户鉴权：密码加密，使用JWT安全验证机制进行登录。
 *
 
