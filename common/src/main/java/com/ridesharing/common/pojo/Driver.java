@@ -18,10 +18,10 @@ public class Driver {
     private Double latitude;
     private Double longitude;
 
-    public Driver( String name, String password, String standard) {
+    public Driver( String name, String password, String rideType) {
         this.username = name;
         this.password = password;
-        this.rideType = RideType.valueOf(standard);
+        this.rideType = RideType.valueOf(rideType);
         this.isAvailable=true;
     }
     public Driver() {
