@@ -58,7 +58,7 @@ class BillServiceTest {
         Bill newBill = new Bill(1, 1, 2, 2.0);  // 新账单：乘客 ID = 1，司机 ID = 2，价格 = 20.0
         newBill.setTimestamp(LocalDateTime.now());
         when(billRepository.save(any(Bill.class))).thenReturn(newBill);
-        when(billService.addBill(anyInt(), anyInt(), anyInt(), anyDouble())).thenReturn(newBill);
+        //when(billService.addBill(anyInt(), anyInt(), anyInt(), anyDouble())).thenReturn(newBill);
 
         // 调用 getPrice 方法
         Bill result = billService.getPrice(Integer.valueOf(1));

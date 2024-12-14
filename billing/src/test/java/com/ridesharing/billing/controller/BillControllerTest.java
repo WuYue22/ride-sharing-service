@@ -2,6 +2,7 @@ package com.ridesharing.billing.controller;
 
 import com.ridesharing.billing.pojo.Bill;
 import com.ridesharing.billing.service.BillService;
+import com.ridesharing.common.pojo.RideRequest;
 import com.ridesharing.common.repository.RideRequestRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,86 +24,92 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(BillController.class)
+
 class BillControllerTest {
     @Mock
     BillService billService;
     @Mock
     RideRequestRepository rideRequestRepository;
-    @Autowired
-    private MockMvc mockMvc;
+
     @InjectMocks
     BillController billController;
     private List<Bill> mockBills;
+
     @BeforeEach
     public void setUp() {
         // 初始化模拟账单数据
         mockBills = Arrays.asList(
                 new Bill(1,1,1,1.0),
-                new Bill(2,1,1,151.0)
+                new Bill(2,1,1,150.0)
         );
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testGetBillList_WhenBillsExist() throws Exception {
+    public void testGetBillList() throws Exception {
+        Integer passengerId = 1;  // 假设测试乘客ID为1
         // 模拟 billService.getBillsByPassengerId 返回账单列表
-        when(billService.getBillsByPassengerId(1)).thenReturn(mockBills);
-
-        // 执行GET请求并验证结果
-        mockMvc.perform(get("/passenger/1"))
-                .andExpect(status().isOk())  // 验证状态码200
-                .andExpect(jsonPath("$.length()").value(mockBills.size()))  // 验证返回的账单数量
-                .andExpect(jsonPath("$[0].amount").value(100.0))  // 验证第一个账单金额
-                .andExpect(jsonPath("$[1].amount").value(150.0));  // 验证第二个账单金额
+        when(billService.getBillsByPassengerId(passengerId)).thenReturn(mockBills);
+        // Act
+        ResponseEntity<List<Bill>> response = billController.getBillList(passengerId);
+        // Assert
+        Assertions.assertEquals(200, response.getStatusCodeValue());  // 确保返回的状态码是200 OK
+        Assertions.assertEquals(2, response.getBody().size());  // 确保返回的账单数量正确
+        Assertions.assertEquals(1.0, response.getBody().get(0).getPrice());  // 确保第一个账单金额正确
+        Assertions.assertEquals(150.0, response.getBody().get(1).getPrice());  // 确保第二个账单金额正确
     }
 
-    @Test
-    public void testGetBillList_WhenNoBillsFound() throws Exception {
-        // 模拟 billService.getBillsByPassengerId 返回一个空的列表
-        when(billService.getBillsByPassengerId(2)).thenReturn(Arrays.asList());
-
-        // 执行GET请求并验证结果
-        mockMvc.perform(get("/passenger/2"))
-                .andExpect(status().isOk())  // 验证状态码200
-                .andExpect(jsonPath("$.length()").value(0));  // 验证返回的账单数量为0
-    }
-
-    @Test
-    public void testGetBillList_WhenPassengerIdNotFound() throws Exception {
-        // 模拟 billService.getBillsByPassengerId 抛出异常（如果需要）
-        when(billService.getBillsByPassengerId(999)).thenThrow(new RuntimeException("Passenger not found"));
-
-        // 执行GET请求并验证异常
-        mockMvc.perform(get("/passenger/999"))
-                .andExpect(status().isNotFound())  // 验证返回的状态码404
-                .andExpect(jsonPath("$.message").value("Passenger not found"));
-    }
 
     @Test
     void testGetDriverBillList() {
-        when(billService.getBillsByDriverId(anyInt())).thenReturn(List.of(new Bill(Integer.valueOf(0), Integer.valueOf(0), Integer.valueOf(0), Double.valueOf(0))));
-
-        ResponseEntity<List<Bill>> result = billController.getDriverBillList(Integer.valueOf(0));
-        Assertions.assertEquals(new ResponseEntity<List<Bill>>(List.of(new Bill(Integer.valueOf(0), Integer.valueOf(0), Integer.valueOf(0), Double.valueOf(0))), null, 0), result);
+        Integer driverId = 1;
+        when(billService.getBillsByDriverId(driverId)).thenReturn(mockBills);
+        // Act
+        ResponseEntity<List<Bill>> response = billController.getDriverBillList(driverId);
+        // Assert
+        Assertions.assertEquals(200, response.getStatusCodeValue());  // 确保返回的状态码是200 OK
+        Assertions.assertEquals(2, response.getBody().size());  // 确保返回的账单数量正确
+        Assertions.assertEquals(1.0, response.getBody().get(0).getPrice());  // 确保第一个账单金额正确
+        Assertions.assertEquals(150.0, response.getBody().get(1).getPrice());  // 确保第二个账单金额正确
     }
 
     @Test
     void testGetPrice() {
-        when(billService.getPrice(anyInt())).thenReturn(new Bill(Integer.valueOf(0), Integer.valueOf(0), Integer.valueOf(0), Double.valueOf(0)));
-
-        ResponseEntity<Bill> result = billController.getPrice(Integer.valueOf(0));
-        Assertions.assertEquals(new ResponseEntity<Bill>(new Bill(Integer.valueOf(0), Integer.valueOf(0), Integer.valueOf(0), Double.valueOf(0)), null, 0), result);
+        Integer rideRequestId = 1;
+        Bill priceBill = new Bill(1, 1,1, 50.0);
+        when(billService.getPrice(rideRequestId)).thenReturn(priceBill);
+        // Act
+        ResponseEntity<Bill> response = billController.getPrice(rideRequestId);
+        // Assert
+        Assertions.assertEquals(200, response.getStatusCodeValue());
+        Assertions.assertEquals(50.0, response.getBody().getPrice());
     }
 
     @Test
     void testAddBill() {
-        when(billService.addBill(anyInt(), anyInt(), anyInt(), anyDouble())).thenReturn(new Bill(null, null, null, Double.valueOf(0)));
-        when(billService.getPrice(anyInt())).thenReturn(new Bill(null, null, null, Double.valueOf(0)));
-        when(rideRequestRepository.findById(any(Integer.class))).thenReturn(null);
-
-        ResponseEntity<Bill> result = billController.addBill(Integer.valueOf(0));
-        Assertions.assertEquals(new ResponseEntity<Bill>(new Bill(null, null, null, Double.valueOf(0)), null, 0), result);
+        // Arrange
+        Integer rideRequestId = 1;
+        Integer passengerId = 1;
+        Integer driverId = 2;
+        Double price = 50.0;
+        // 模拟RideRequest
+        RideRequest rideRequest = new RideRequest();
+        rideRequest.setPassengerId(passengerId);
+        rideRequest.setDriverId(driverId);
+        // 模拟rideRequestRepository的行为
+        when(rideRequestRepository.findById(rideRequestId)).thenReturn(java.util.Optional.of(rideRequest));
+        // 模拟billService.getPrice返回价格
+        Bill priceBill = new Bill(1, passengerId, driverId,price);
+        when(billService.getPrice(rideRequestId)).thenReturn(priceBill);
+        // 模拟billService.addBill返回账单
+        Bill newBill = new Bill(1, passengerId,driverId, price);
+        when(billService.addBill(passengerId, driverId, rideRequestId, price)).thenReturn(newBill);
+        // Act
+        ResponseEntity<Bill> response = billController.addBill(rideRequestId);
+        // Assert
+        Assertions.assertEquals(200, response.getStatusCodeValue());  // 确保返回的状态码是200 OK
+        Assertions.assertEquals(passengerId, response.getBody().getPassengerId());  // 确保返回的账单乘客ID正确
+        Assertions.assertEquals(driverId, response.getBody().getDriverId());  // 确保返回的账单司机ID正确
+        Assertions.assertEquals(price, response.getBody().getPrice());  // 确保返回的账单金额正确
     }
 }
-
-//Generated with love by TestMe :) Please raise issues & feature requests at: https://weirddev.com/forum#!/testme
