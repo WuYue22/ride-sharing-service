@@ -3,7 +3,6 @@ package com.ridesharing.passengermanagement.controller;
 import com.ridesharing.billing.pojo.Bill;
 import com.ridesharing.common.pojo.RideRequest;
 import com.ridesharing.common.pojo.RideType;
-//import com.ridesharing.common.pojo.Driver;
 import com.ridesharing.passengermanagement.dto.PassengerDto;
 import com.ridesharing.passengermanagement.dto.ResponseMessage;
 import com.ridesharing.passengermanagement.pojo.Passenger;

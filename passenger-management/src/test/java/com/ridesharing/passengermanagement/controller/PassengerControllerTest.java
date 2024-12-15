@@ -1,145 +1,188 @@
 package com.ridesharing.passengermanagement.controller;
 
+import com.ridesharing.billing.pojo.Bill;
 import com.ridesharing.common.pojo.RideRequest;
-import com.ridesharing.common.pojo.RideStatus;
 import com.ridesharing.common.pojo.RideType;
-import com.ridesharing.common.pojo.Driver;
+import com.ridesharing.passengermanagement.dto.PassengerDto;
+import com.ridesharing.passengermanagement.dto.ResponseMessage;
 import com.ridesharing.passengermanagement.pojo.Passenger;
 import com.ridesharing.passengermanagement.service.PassengerService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.mockito.Mockito.*;
-
-import org.springframework.test.web.servlet.MockMvc;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MvcResult;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-//@ContextConfiguration(classes= PassengerController.class)
-@AutoConfigureMockMvc
-@SpringBootTest
-public class PassengerControllerTest {
+import java.util.Arrays;
+import java.util.List;
 
-    @Autowired
-    private MockMvc mockMvc;  // 用于模拟 HTTP 请求和响应
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
-    @Autowired
-    private PassengerService passengerService;
-    @Autowired
-    private RestTemplate restTemplate;  // 模拟 RestTemplate 服务
+class PassengerControllerTest {
+    @Mock
+    PassengerService passengerService;
+    @Mock
+    RestTemplate restTemplate;
 
-    @Value("${driver-service.base-url}")
-    private String driverServiceBaseUrl;
-
-    private Passenger passenger;
-
+    @InjectMocks
+    PassengerController passengerController;
+    private Integer rideRequestId;
+    private RideRequest rideRequest;
     @BeforeEach
     void setUp() {
-        passenger = new Passenger();
-        passenger.setPassengerId(1);
-        passenger.setPassengerName("testPassenger");
-        passenger.setPassengerPassword("password");
+        MockitoAnnotations.openMocks(this);
+        rideRequestId = 100; // 假设的 rideRequestId
+        rideRequest = new RideRequest();
+        rideRequest.setRideRequestId(rideRequestId);
+        rideRequest.setPassengerId(1);
+        rideRequest.setDriverId(2);
+        rideRequest.setRideType(RideType.STANDARD);
+        rideRequest.setPickupLocation("Location A");
+        rideRequest.setDriverLatitude(40.7128);
+        rideRequest.setDriverLongitude(-74.0060);
+        rideRequest.setDropoffLocation("Location B");
+        rideRequest.setRideStatus("CONFIRMED"); // 假设状态为已确认
+        rideRequest.setDistance(10.0);
     }
 
     @Test
-    void testSearchRide() throws Exception {
-        // 模拟服务层返回数据
-        //when(passengerService.searchRide("Location A", "Location B"))
-          //      .thenReturn(List.of(new RideRequest()));
-        passengerService.searchRide("Location A", "Location B");
-        // 模拟 HTTP 请求并验证响应
-        mockMvc.perform(get("/api/passenger/search")
-                        .param("pickupLocation", "Location A")
-                        .param("dropoffLocation", "Location B"))
-                .andExpect(status().isOk())  // 验证返回状态码是 200
-                .andExpect(jsonPath("$").isArray())  // 验证返回是一个数组
-                .andExpect(jsonPath("$[0].pickupLocation").value("Location A"));
+    void testSubmitRequest() {
+        rideRequest.setRideRequestId(1); // 假设 rideRequestId 由数据库自动生成
+        rideRequest.setRideStatus("PENDING"); // 设置乘车状态
+        // 设置 passengerService.submitRequest 的返回值
+        RideRequest mockedResponse = new RideRequest();
+        mockedResponse.setPassengerId(1);
+        mockedResponse.setRideType(RideType.STANDARD);
+        mockedResponse.setPickupLocation("Location A");
+        mockedResponse.setDropoffLocation("Location B");
+        mockedResponse.setDistance(10.0);
+
+        when(passengerService.submitRequest(
+                anyInt(),
+                any(RideType.class),
+                anyString(),
+                anyString(),
+                anyDouble()
+        )).thenReturn(mockedResponse);
+
+        // 调用 controller 方法并验证
+        ResponseEntity<RideRequest> response = passengerController.submitRequest(rideRequest);
+
+        // 断言返回的内容
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(rideRequest.getPassengerId(), response.getBody().getPassengerId());
+        assertEquals(rideRequest.getRideType(), response.getBody().getRideType());
+        assertEquals(rideRequest.getPickupLocation(), response.getBody().getPickupLocation());
+        assertEquals(rideRequest.getDropoffLocation(), response.getBody().getDropoffLocation());
+        assertEquals(rideRequest.getDistance(), response.getBody().getDistance());
     }
 
     @Test
-    void testChooseRide() throws Exception {
-        // 模拟服务层返回数据
-        RideRequest rideRequest = new RideRequest();
-        rideRequest.setRideStatus(RideStatus.PENDING.name());
+    void testTrackRide() {
+        rideRequest.setRideStatus("PENDING");
+        rideRequest.setDistance(10.0);
 
-        passengerService.submitRequest(1, RideType.STANDARD, "Location A", "Location B",1.0);
+        // 模拟 passengerService.findRequestId 方法的返回值
+        when(passengerService.findRequestId(1)).thenReturn(rideRequestId);
 
-        // 模拟 HTTP 请求并验证响应
-        mockMvc.perform(post("/api/passenger/choose-ride")
-                        .param("passengerId", "1")
-                        .param("rideType", "STANDARD")
-                        .param("pickupLocation", "Location A")
-                        .param("dropoffLocation", "Location B"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.rideStatus").value(RideStatus.PENDING.name()));
+        // 模拟 passengerService.trackRide 方法的返回值
+        when(passengerService.trackRide(rideRequestId)).thenReturn(rideRequest);
+
+        // 调用 controller 方法并验证
+        ResponseEntity<RideRequest> response = passengerController.trackRide(1);
+
+        // 断言返回的内容
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(rideRequestId, response.getBody().getRideRequestId());
+        assertEquals(rideRequest.getPassengerId(), response.getBody().getPassengerId());
+        assertEquals(rideRequest.getDriverId(), response.getBody().getDriverId());
+        assertEquals(rideRequest.getRideType(), response.getBody().getRideType());
+        assertEquals(rideRequest.getPickupLocation(), response.getBody().getPickupLocation());
+        assertEquals(rideRequest.getDriverLatitude(), response.getBody().getDriverLatitude());
+        assertEquals(rideRequest.getDriverLongitude(), response.getBody().getDriverLongitude());
+        assertEquals(rideRequest.getDropoffLocation(), response.getBody().getDropoffLocation());
+        assertEquals(rideRequest.getRideStatus(), response.getBody().getRideStatus());
+        assertEquals(rideRequest.getDistance(), response.getBody().getDistance());
     }
+
     @Test
-    public void testGetDriverInfo() throws Exception {
-        Integer driverId = 1;
-        Double expectedDriverLongtitude= -74.0060;
-        Double expectedDriverLatitude = 40.7128;
-        String expectedDriverName = "John Doe";
-        RideType expectedRideType = RideType.STANDARD;
+    void testConfirmRide() {
+        // 模拟 passengerService.confirmRide 方法的返回值
+        when(passengerService.confirmRide(rideRequestId)).thenReturn(rideRequest);
 
-        // 创建一个模拟的 Driver 对象
-        Driver mockDriver = new Driver();
-        mockDriver.setId(driverId);
-        mockDriver.setLongitude(expectedDriverLongtitude);
-        mockDriver.setLatitude(expectedDriverLatitude);
-        mockDriver.setUsername(expectedDriverName);
-        mockDriver.setRideType(expectedRideType);
+        ResponseEntity<RideRequest> response = passengerController.confirmRide(rideRequestId);
 
-        // 模拟 RestTemplate 的行为，当调用 getForObject 时返回 mockDriver
-        when(restTemplate.getForObject(eq(driverServiceBaseUrl + "/api/driver/" + driverId), eq(Driver.class)))
-                .thenReturn(mockDriver);
-
-        // 执行 GET 请求
-        MvcResult result = mockMvc.perform(get("/api/passenger/driver/{driverId}", driverId))
-                .andExpect(status().isOk())  // 验证 HTTP 状态码为 200
-                .andExpect(jsonPath("$.username").value(expectedDriverName))  // 验证返回 JSON 中的字段
-                .andExpect(jsonPath("$.rideType").value(expectedRideType.name()))// 验证返回 JSON 中的字段
-                .andExpect(jsonPath("$.longitude").value(expectedDriverLongtitude))
-                .andReturn();
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(rideRequestId, response.getBody().getRideRequestId());
+        assertEquals(rideRequest.getPassengerId(), response.getBody().getPassengerId());
+        assertEquals(rideRequest.getDriverId(), response.getBody().getDriverId());
+        assertEquals(rideRequest.getRideType(), response.getBody().getRideType());
+        assertEquals(rideRequest.getPickupLocation(), response.getBody().getPickupLocation());
+        assertEquals(rideRequest.getDriverLatitude(), response.getBody().getDriverLatitude());
+        assertEquals(rideRequest.getDriverLongitude(), response.getBody().getDriverLongitude());
+        assertEquals(rideRequest.getDropoffLocation(), response.getBody().getDropoffLocation());
+        assertEquals(rideRequest.getRideStatus(), response.getBody().getRideStatus());
+        assertEquals(rideRequest.getDistance(), response.getBody().getDistance());
     }
+
     @Test
-    void testTrackRide() throws Exception {
-        // 测试数据
-        Integer rideRequestId = 1;
-        Integer driverId = 1;
-        Double expectedDriverLatitude = 40.7128;
-        Double expectedDriverLongitude = -74.0060;
-        // 模拟的 Driver 对象
-        Driver mockDriver = new Driver();
-        mockDriver.setId(driverId);
-        mockDriver.setLatitude(expectedDriverLatitude);
-        mockDriver.setLongitude(expectedDriverLongitude);
+    void testCompleteRide() {
+        // 模拟 passengerService.completeRide 方法的返回值
+        when(passengerService.completeRide(rideRequestId)).thenReturn(rideRequest);
 
-        // 创建一个模拟的 RideRequest 对象
-        RideRequest mockRideRequest = new RideRequest();
-        mockRideRequest.setDriverId(1);
-        mockRideRequest.setDriverLatitude(expectedDriverLatitude);
-        mockRideRequest.setDriverLongitude(expectedDriverLongitude);
-        //passengerService.trackRide(rideRequestId);
+        // 调用 controller 方法并验证
+        ResponseEntity<RideRequest> response = passengerController.completeRide(rideRequestId);
 
-        // 模拟 RestTemplate 的 getForObject 行为，返回 mockDriver 对象
-        when(restTemplate.getForObject(eq(driverServiceBaseUrl +"/api/driver/" + driverId), eq(Driver.class)))
-                .thenReturn(mockDriver);
-        // 模拟 PassengerService 的 trackRide 方法
-        when(passengerService.trackRide(rideRequestId)).thenReturn(mockRideRequest);
+        // 断言返回的内容
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(rideRequestId, response.getBody().getRideRequestId());
+        assertEquals(rideRequest.getPassengerId(), response.getBody().getPassengerId());
+        assertEquals(rideRequest.getDriverId(), response.getBody().getDriverId());
+        assertEquals(rideRequest.getRideType(), response.getBody().getRideType());
+        assertEquals(rideRequest.getPickupLocation(), response.getBody().getPickupLocation());
+        assertEquals(rideRequest.getDriverLatitude(), response.getBody().getDriverLatitude());
+        assertEquals(rideRequest.getDriverLongitude(), response.getBody().getDriverLongitude());
+        assertEquals(rideRequest.getDropoffLocation(), response.getBody().getDropoffLocation());
+        assertEquals(rideRequest.getRideStatus(), response.getBody().getRideStatus());
+        assertEquals(rideRequest.getDistance(), response.getBody().getDistance());
+    }
 
-        // 执行 POST 请求，并验证响应
-        mockMvc.perform(post("/api/passenger/track-ride")
-                        .param("rideRequestId", rideRequestId.toString()))
-                .andExpect(status().isOk())  // 验证返回的 HTTP 状态是 200 OK
-                .andExpect(jsonPath("$.driverLatitude").value(expectedDriverLatitude))  // 验证返回的 JSON 中包含 driverLatitude
-                .andExpect(jsonPath("$.driverLongitude").value(expectedDriverLongitude));  // 验证返回的 JSON 中包含 driverLongitude
+    @Test
+    void testGetBillList() {
+        Integer passengerId=1;
+        // 设置数据
+        Bill bill1 = new Bill();
+        bill1.setRideRequestId(101);
+        bill1.setPrice(50.0);
+
+        Bill bill2 = new Bill();
+        bill2.setRideRequestId(102);
+        bill2.setPrice(30.0);
+        List<Bill> billList = Arrays.asList(bill1, bill2);
+
+        // 模拟 restTemplate.exchange 方法的返回值
+        when(restTemplate.exchange(
+                Mockito.anyString(),
+                Mockito.eq(HttpMethod.GET),
+                Mockito.isNull(),
+                Mockito.any(ParameterizedTypeReference.class)
+        )).thenReturn(ResponseEntity.ok(billList));
+
+        // 调用 controller 方法并验证
+        ResponseEntity<List<Bill>> response = passengerController.getBillList(passengerId);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(2, response.getBody().size());
+        assertEquals(billList.get(0).getRideRequestId(), response.getBody().get(0).getRideRequestId());
+        assertEquals(billList.get(1).getPrice(), response.getBody().get(1).getPrice());
     }
 }
+

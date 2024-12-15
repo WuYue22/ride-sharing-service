@@ -79,13 +79,13 @@ public class PassengerService implements IPassengerService {
         return "User registered successfully";
     }
 
-    // 1) 搜索乘车
+    // 搜索乘车
     public List<RideRequest> searchRide(String pickupLocation, String dropoffLocation) {
         // 查找匹配的乘车请求
         return rideRequestRepository.findByPickupLocationAndDropoffLocation(pickupLocation, dropoffLocation);
     }
 
-    // 提交乘车请求
+    // 1) 提交乘车请求
     public RideRequest submitRequest(Integer passengerId, RideType rideType, String pickupLocation, String dropoffLocation,Double distance) {
         Passenger passenger = passengerRepository.findById(passengerId)
                 .orElseThrow(() -> new RuntimeException("Passenger not found"));
