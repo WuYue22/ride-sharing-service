@@ -53,7 +53,6 @@ For further reference, please consider the following sections:
 使用Eureka进行服务发现和注册。
 
 ## 测试结果
-JUnit单元测试和集成测试还未编写完成……
 
 启动后所有微服务全部成功注册到Eureka。可以正确转发路由，允许前端跨域访问。
 
